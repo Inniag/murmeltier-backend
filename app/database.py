@@ -4,10 +4,13 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import hashlib
 import datetime
+import os
 
 # get these from environment
-username = "postgres"
-password = ""
+MURMEL_POSTGRES_USER = os.getenv("MURMEL_POSTGRES_USER")
+MURMEL_POSTGRES_PASSWORD = os.getenv("MURMEL_POSTGRES_PASSWORD")
+MURMEL_POSTGRES_HOST = os.getenv("MURMEL_POSTGRES_HOST")
+
 
 metadata = MetaData()
 
@@ -27,13 +30,16 @@ murmel = Table(
     Column("id", String, primary_key=True, nullable=False),
     Column("mood_value", Integer),
     Column("hashtag", String),
-    Column("created_at", DateTime)
+    Column("created_at", DateTime),
 )
 
 
 def connect():
     print("connecting")
-    connection_string = f"postgresql://{username}:{password}@murmeltier-dev.cesmdqo7uee8.eu-central-1.rds.amazonaws.com"
+    connection_string = f"postgresql://{MURMEL_POSTGRES_USER}:{MURMEL_POSTGRES_PASSWORD}@{MURMEL_POSTGRES_HOST}"
+
+    print(connection_string)
+
     engine = create_engine(connection_string, echo=True)
     conn = engine.connect()
     print("OK")
@@ -61,9 +67,7 @@ def create_user(conn):
     id = str(uuid.uuid4())
 
     ins = users.insert().values(
-        id=id,
-        password=password,
-        last_login=datetime.datetime.utcnow()
+        id=id, password=password, last_login=datetime.datetime.utcnow()
     )
     conn.execute(ins)
 
@@ -79,7 +83,7 @@ def create_murmel(conn, params):
         id=id,
         mood_value=params["mood_value"],
         hashtag=params["hashtag"],
-        created_at=datetime.datetime.utcnow()
+        created_at=datetime.datetime.utcnow(),
     )
     conn.execute(ins)
 
