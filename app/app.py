@@ -1,6 +1,13 @@
 from flask import Flask, request, abort
 from flask_httpauth import HTTPBasicAuth
-from .database import connect, create_user as db_create_user, create_murmel as db_create_murmel, get_murmel_by_user_id as db_get_murmel_by_user_id, get_murmal_radar as db_get_murmel_radar, get_user_by_id
+from .database import (
+    connect,
+    create_user as db_create_user,
+    create_murmel as db_create_murmel,
+    get_murmel_by_user_id as db_get_murmel_by_user_id,
+    get_murmal_radar as db_get_murmel_radar,
+    get_user_by_id,
+)
 from .auth import login
 import uuid
 
@@ -22,10 +29,7 @@ def create_user():
 
     id, password = db_create_user(conn)
 
-    message = {
-        "id": id,
-        "password": password
-    }
+    message = {"id": id, "password": password}
 
     return (message, 200)
 
@@ -50,9 +54,7 @@ def get_current_murmel():
     conn = connect()
 
     # TODO: get user ID here!
-    params = {
-        "user_id": "1234"
-    }
+    params = {"user_id": "1234"}
 
     murmel = db_get_murmel_by_user_id(conn, params)
 
@@ -60,7 +62,7 @@ def get_current_murmel():
         "id": murmel[0],
         "mood_value": murmel[1],
         "hashtag": murmel[2],
-        "created_at": murmel[3]
+        "created_at": murmel[3],
     }
 
     return (message, 200)
@@ -71,9 +73,7 @@ def get_current_murmel():
 def get_murmel_radar():
 
     # TODO: get user ID here!
-    params = {
-        "user_id": "1234"
-    }
+    params = {"user_id": "1234"}
 
     murmel = db_get_murmel_radar(conn, params)
     return ("", 200)
