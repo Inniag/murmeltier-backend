@@ -1,5 +1,6 @@
 from flask import Flask, request
-from .database import connect, create_user, get_user_by_id
+from .database import connect, create_user as db_create_user, get_user_by_id
+import uuid
 
 app = Flask(__name__)
 
@@ -27,5 +28,6 @@ def get_murmel_radar():
 @app.route("/test", methods=["GET"])
 def test():
     conn = connect()
-    create_user(conn)
-    get_user_by_id(conn, 1)
+    db_create_user(conn)
+    get_user_by_id(conn, "2515a44f-9d02-45e1-a26e-e5b68e195b0f")
+    return ("", 200)
