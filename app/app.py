@@ -1,6 +1,8 @@
 from flask import Flask, request, abort
 from flask_httpauth import HTTPBasicAuth
+from flask_cors import CORS
 from .database import (
+    create_user as db_create_user,
     connect,
     create_user as db_create_user,
     create_murmel as db_create_murmel,
@@ -13,6 +15,7 @@ import uuid
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
+CORS(app)
 conn = connect()
 
 
