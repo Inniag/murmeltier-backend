@@ -8,6 +8,7 @@ import datetime
 # get these from environment
 username = "postgres"
 password = ""
+salt = b"9236adc052fa3328316aa0540d16365221194159d1a49cb0f4172acf573ed02f"
 
 metadata = MetaData()
 
@@ -56,7 +57,7 @@ def get_user_by_id(conn, id):
 
 
 def create_user(conn):
-    dk = hashlib.pbkdf2_hmac("sha256", uuid.uuid4().bytes, b"salt", 100000)
+    dk = hashlib.pbkdf2_hmac("sha256", uuid.uuid4().bytes, salt, 100000)
     password = dk.hex()
     id = str(uuid.uuid4())
 
