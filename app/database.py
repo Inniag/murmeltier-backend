@@ -10,7 +10,7 @@ import os
 MURMEL_POSTGRES_USER = os.getenv("MURMEL_POSTGRES_USER")
 MURMEL_POSTGRES_PASSWORD = os.getenv("MURMEL_POSTGRES_PASSWORD")
 MURMEL_POSTGRES_HOST = os.getenv("MURMEL_POSTGRES_HOST")
-
+salt = "9236adc052fa3328316aa0540d16365221194159d1a49cb0f4172acf573ed02f"
 
 metadata = MetaData()
 
@@ -57,17 +57,17 @@ def get_user_by_id(conn, id):
     s = select([users], users.c.id == id)
     result = conn.execute(s)
     row = result.fetchone()
-    print(row)
     result.close()
+    return row
 
 
 def create_user(conn):
-    dk = hashlib.pbkdf2_hmac("sha256", uuid.uuid4().bytes, b"salt", 100000)
-    password = dk.hex()
+    plaintext_password = str(uuid.uuid4())
+    hashed_password = hash_password(plaintext_password)
     id = str(uuid.uuid4())
 
     ins = users.insert().values(
-        id=id, password=password, last_login=datetime.datetime.utcnow()
+        id=id, password=hashed_password, last_login=datetime.datetime.utcnow()
     )
     conn.execute(ins)
 
@@ -112,3 +112,8 @@ def get_murmel_radar(conn, params):
     print(result)
 
     return None
+
+
+def hash_password(plaintext_password):
+    salted_password = plaintext_password + salt
+    return hashlib.sha512(salted_password.encode()).hexdigest()
