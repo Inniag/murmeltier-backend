@@ -1,8 +1,18 @@
-from flask import Flask, request
+from flask import Flask, request, abort
+from flask_httpauth import HTTPBasicAuth
 from .database import connect, create_user as db_create_user, create_murmel as db_create_murmel, get_murmel_by_user_id as db_get_murmel_by_user_id, get_murmal_radar as db_get_murmel_radar, get_user_by_id
+from .auth import login
 import uuid
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+conn = connect()
+
+
+@auth.verify_password
+def verify_password(username, password):
+    print("verify_password")
+    return login(conn, username, password)
 
 
 @app.route("/user", methods=["POST"])
@@ -66,5 +76,10 @@ def get_murmel_radar():
     }
 
     murmel = db_get_murmel_radar(conn, params)
-
     return ("", 200)
+
+
+@app.route("/test", methods=["GET"])
+@auth.login_required
+def test():
+    return (auth.username(), 200)

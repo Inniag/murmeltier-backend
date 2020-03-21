@@ -52,8 +52,8 @@ def get_user_by_id(conn, id):
     s = select([users], users.c.id == id)
     result = conn.execute(s)
     row = result.fetchone()
-    print(row)
     result.close()
+    return row
 
 
 def create_user(conn):
