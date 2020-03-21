@@ -5,7 +5,7 @@ from .database import (
     create_user as db_create_user,
     create_murmel as db_create_murmel,
     get_murmel_by_user_id as db_get_murmel_by_user_id,
-    get_murmal_radar as db_get_murmel_radar,
+    get_murmel_radar as db_get_murmel_radar,
     get_user_by_id,
 )
 from .auth import login
