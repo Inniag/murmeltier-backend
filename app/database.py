@@ -71,7 +71,7 @@ def create_user(conn):
     )
     conn.execute(ins)
 
-    return (id, password)
+    return (id, plaintext_password)
 
 
 def create_murmel(conn, params):
