@@ -21,7 +21,3 @@ def get_current_murmel():
 @app.route("/murmel/radar?location=Foo", methods=["GET"])
 def get_murmel_radar():
     print(request.headers)
-
-
-if __name__ == "__main__":
-    app.run()
