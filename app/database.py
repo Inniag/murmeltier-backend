@@ -10,12 +10,24 @@ username = "postgres"
 password = ""
 
 metadata = MetaData()
+
+
 users = Table(
     "users",
     metadata,
     Column("id", String, primary_key=True, nullable=False),
     Column("password", String),
     Column("last_login", DateTime),
+)
+
+
+murmel = Table(
+    "murmel",
+    metadata,
+    Column("id", String, primary_key=True, nullable=False),
+    Column("mood_value", Integer),
+    Column("hashtag", String),
+    Column("created_at", DateTime)
 )
 
 
@@ -49,8 +61,50 @@ def create_user(conn):
     id = str(uuid.uuid4())
 
     ins = users.insert().values(
-        id=id, password=password, last_login=datetime.datetime.utcnow()
+        id=id,
+        password=password,
+        last_login=datetime.datetime.utcnow()
     )
     conn.execute(ins)
 
     return (id, password)
+
+
+def create_murmel(conn, params):
+
+    id = str(uuid.uuid4())
+
+    # TODO add user UD!
+    ins = murmel.insert().values(
+        id=id,
+        mood_value=params["mood_value"],
+        hashtag=params["hashtag"],
+        created_at=datetime.datetime.utcnow()
+    )
+    conn.execute(ins)
+
+    return None
+
+
+def get_murmel_by_user_id(conn, params):
+
+    # TODO should select by user ID
+    s = select([murmel])
+
+    result = conn.execute(s)
+    # TODO select latest/current rather than just fetchone
+    result = result.fetchone()
+
+    return result
+
+
+def get_murmel_radar(conn, params):
+
+    # TODO exclude current user
+    s = select([murmel])
+
+    result = conn.execute(s)
+
+    print(result)
+
+    return None
