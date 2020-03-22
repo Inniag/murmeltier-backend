@@ -108,16 +108,31 @@ def get_murmel_by_user_id(conn, username):
     return result
 
 
-def get_murmel_radar(conn, params):
+def get_murmel_radar(conn, username):
 
-    # TODO exclude current user
-    s = select([murmel])
+    s = (
+        select([murmel], murmel.c.username != username)
+        .order_by(murmel.c.created_at.desc())
+        .limit(5)
+    )
 
-    result = conn.execute(s)
+    result = conn.execute(s).fetchall()
 
-    print(result)
+    # not pythonic, but hey...
+    res = []
+    for r in result:
 
-    return None
+        d = {
+            "id": r["id"],
+            "mood_value": r["mood_value"],
+            "hashtag": r["hashtag"],
+            "username": r["username"],
+            "created_at": r["created_at"],
+        }
+
+        res.append(d)
+
+    return res
 
 
 def hash_password(plaintext_password):

@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from flask_httpauth import HTTPBasicAuth
 from flask_cors import CORS
+from flask import jsonify
 from .database import (
     create_user as db_create_user,
     connect,
@@ -89,11 +90,9 @@ def get_current_murmel():
 @auth.login_required
 def get_murmel_radar():
 
-    # TODO: get user ID here!
-    params = {"user_id": "1234"}
+    murmel = db_get_murmel_radar(conn, auth.username())
 
-    murmel = db_get_murmel_radar(conn, params)
-    return ("", 200)
+    return (jsonify(murmel), 200)
 
 
 @app.route("/test", methods=["GET"])
