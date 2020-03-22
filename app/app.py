@@ -118,6 +118,25 @@ def start_chat():
     return ("", 200)
 
 
+@app.route("/murmel/<murmel_id>/chat_room/<room_id>", methods=["DELETE"])
+@auth.login_required
+def delete_chat(murmel_id, room_id):
+    murmel = get_murmel_by_id(conn, murmel_id)
+
+    if murmel is None:
+        abort(404)
+
+    if murmel["chat_room_id"] is None or murmel["chat_room_id"] == "":
+        return ("", 200)
+
+    if murmel["chat_room_id"] != room_id:
+        abort(404)
+
+    set_murmel_chat_room(conn, murmel["id"], None)
+
+    return ("", 200)
+
+
 @app.route("/test", methods=["GET"])
 @auth.login_required
 def test():
