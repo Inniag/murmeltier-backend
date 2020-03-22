@@ -104,7 +104,7 @@ def get_murmel_by_id(conn, id):
     return result
 
 
-def get_murmel_by_user_id(conn, params, username):
+def get_murmel_by_user_id(conn, username):
     s = (
         select([murmel], murmel.c.username == username)
         .order_by(murmel.c.created_at.desc())
