@@ -82,6 +82,7 @@ def get_current_murmel():
             "mood_value": murmel[1],
             "hashtag": murmel[2],
             "created_at": murmel[4],
+            "chat_room_id": murmel["chat_room_id"],
         }
 
         return (message, 200)
