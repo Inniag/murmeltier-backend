@@ -97,13 +97,13 @@ def get_murmel_radar():
     return (jsonify(murmel), 200)
 
 
-@app.route("/murmel/chat_room", methods=["GET"])
+@app.route("/murmel/chat_room", methods=["POST"])
 def start_chat():
     body = request.get_json(force=True)
     murmel_id = body["murmel_id"]
     chat_room_id = body["room_id"]
 
-    murmel = get_murmel_by_id(murmel_id)
+    murmel = get_murmel_by_id(conn, murmel_id)
     print("start_chat murmel")
     print(murmel)
 
