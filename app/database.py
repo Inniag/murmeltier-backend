@@ -45,6 +45,8 @@ def connect():
     conn = engine.connect()
     print("OK")
 
+    # murmel.drop(engine)
+
     create_tables(engine)
 
     return conn
@@ -92,14 +94,24 @@ def create_murmel(conn, mood_value, hashtag, username):
     return id
 
 
-def get_murmel_by_user_id(conn, params):
+def get_murmel_by_user_id(conn, username):
 
     # TODO should select by user ID
-    s = select([murmel])
+    s = select([murmel], murmel.c.username == username)
+    # s = select([murmel])
 
     result = conn.execute(s)
+
+    print("\n\n\n")
+    print(result)
+    print("\n\n\n")
+
     # TODO select latest/current rather than just fetchone
     result = result.fetchone()
+
+    print("\n\n\n")
+    print(result)
+    print("\n\n\n")
 
     return result
 
