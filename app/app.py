@@ -65,6 +65,8 @@ def get_current_murmel():
     print(auth.username())
     murmel = db_get_murmel_by_user_id(conn, auth.username())
 
+    print(murmel)
+
     # special case when user has no murmel
     if murmel is None:
 

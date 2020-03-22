@@ -96,22 +96,14 @@ def create_murmel(conn, mood_value, hashtag, username):
 
 def get_murmel_by_user_id(conn, username):
 
-    # TODO should select by user ID
-    s = select([murmel], murmel.c.username == username)
-    # s = select([murmel])
+    s = (
+        select([murmel], murmel.c.username == username)
+        .order_by(murmel.c.created_at.desc())
+        .limit(1)
+    )
 
     result = conn.execute(s)
-
-    print("\n\n\n")
-    print(result)
-    print("\n\n\n")
-
-    # TODO select latest/current rather than just fetchone
     result = result.fetchone()
-
-    print("\n\n\n")
-    print(result)
-    print("\n\n\n")
 
     return result
 
