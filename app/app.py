@@ -97,15 +97,12 @@ def get_murmel_radar():
     return (jsonify(murmel), 200)
 
 
-@app.route("/murmel/chat_room", methods=["POST"])
-def start_chat():
+@app.route("/murmel/<murmel_id>/chat_room", methods=["POST"])
+def start_chat(murmel_id):
     body = request.get_json(force=True)
-    murmel_id = body["murmel_id"]
     chat_room_id = body["room_id"]
 
     murmel = get_murmel_by_id(conn, murmel_id)
-    print("start_chat murmel")
-    print(murmel)
 
     if murmel is None:
         abort(404)
