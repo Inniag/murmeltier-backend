@@ -30,6 +30,7 @@ murmel = Table(
     Column("id", String, primary_key=True, nullable=False),
     Column("mood_value", Integer),
     Column("hashtag", String),
+    Column("username", String),
     Column("created_at", DateTime),
 )
 
@@ -74,20 +75,21 @@ def create_user(conn):
     return (id, plaintext_password)
 
 
-def create_murmel(conn, params):
+def create_murmel(conn, mood_value, hashtag, username):
 
+    # create murmel UUID:
     id = str(uuid.uuid4())
 
-    # TODO add user UD!
     ins = murmel.insert().values(
         id=id,
-        mood_value=params["mood_value"],
-        hashtag=params["hashtag"],
+        mood_value=mood_value,
+        hashtag=hashtag,
+        username=username,
         created_at=datetime.datetime.utcnow(),
     )
     conn.execute(ins)
 
-    return None
+    return id
 
 
 def get_murmel_by_user_id(conn, params):

@@ -26,6 +26,7 @@ def verify_password(username, password):
 
 
 @app.route("/user", methods=["POST"])
+@auth.login_required
 def create_user():
 
     conn = connect()
@@ -38,20 +39,26 @@ def create_user():
 
 
 @app.route("/murmel", methods=["POST"])
+@auth.login_required
 def create_murmel():
 
     conn = connect()
 
-    # TODO add user ID!
+    # murmel info from request
     params = request.get_json(force=True)
     # TODO: validate mood_value between 1 and 5?
 
-    db_create_murmel(conn, params)
+    id = db_create_murmel(
+        conn, params["mood_value"], params["hashtag"], auth.username()
+    )
 
-    return ("", 200)
+    message = {"id": id}
+
+    return (message, 200)
 
 
 @app.route("/murmel/me/current", methods=["GET"])
+@auth.login_required
 def get_current_murmel():
 
     conn = connect()
@@ -73,6 +80,7 @@ def get_current_murmel():
 
 # TODO support location in route
 @app.route("/murmel/radar", methods=["GET"])
+@auth.login_required
 def get_murmel_radar():
 
     # TODO: get user ID here!
