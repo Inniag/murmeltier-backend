@@ -128,6 +128,7 @@ def get_murmel_radar(conn, username):
 
     # just get large number of murmels, hoping there are distinct users
     # FIXME this will NOT scale to many users!
+    # FIXME also this will not show users that don't have one in the latest 1k murmels
     s = (
         select([murmel])
         .where(murmel.c.username != username)
