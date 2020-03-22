@@ -7,9 +7,11 @@ from .database import (
     connect,
     create_user as db_create_user,
     create_murmel as db_create_murmel,
+    get_murmel_by_id,
     get_murmel_by_user_id as db_get_murmel_by_user_id,
     get_murmel_radar as db_get_murmel_radar,
     get_user_by_id,
+    set_murmel_chat_room,
 )
 from .auth import login
 import uuid
@@ -93,6 +95,27 @@ def get_murmel_radar():
     murmel = db_get_murmel_radar(conn, auth.username())
 
     return (jsonify(murmel), 200)
+
+
+@app.route("/murmel/chat_room", methods=["GET"])
+def start_chat():
+    body = request.get_json(force=True)
+    murmel_id = body["murmel_id"]
+    chat_room_id = body["room_id"]
+
+    murmel = get_murmel_by_id(murmel_id)
+    print("start_chat murmel")
+    print(murmel)
+
+    if murmel is None:
+        abort(404)
+
+    if murmel["chat_room_id"] is None or murmel["chat_room_id"] == "":
+        set_murmel_chat_room(conn, murmel["id"], chat_room_id)
+    else:
+        abort(409)
+
+    return ("", 200)
 
 
 @app.route("/test", methods=["GET"])

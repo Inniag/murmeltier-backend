@@ -32,6 +32,7 @@ murmel = Table(
     Column("hashtag", String),
     Column("username", String),
     Column("created_at", DateTime),
+    Column("chat_room_id", String),
 )
 
 
@@ -94,8 +95,16 @@ def create_murmel(conn, mood_value, hashtag, username):
     return id
 
 
-def get_murmel_by_user_id(conn, username):
+def get_murmel_by_id(conn, id):
+    s = select([murmel], murmel.c.id == id)
 
+    result = conn.execute(s)
+    result = result.fetchone()
+
+    return result
+
+
+def get_murmel_by_user_id(conn, params, username):
     s = (
         select([murmel], murmel.c.username == username)
         .order_by(murmel.c.created_at.desc())
@@ -106,6 +115,11 @@ def get_murmel_by_user_id(conn, username):
     result = result.fetchone()
 
     return result
+
+
+def set_murmel_chat_room(conn, murmel_id, room_id):
+    stmt = murmel.update().where(murmel.c.id == murmel_id).values(chat_room_id=room_id)
+    conn.execute(stmt)
 
 
 def get_murmel_radar(conn, username):
