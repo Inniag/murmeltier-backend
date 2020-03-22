@@ -1,10 +1,12 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, func
 from sqlalchemy import Table, Column, Integer, String, DateTime, MetaData, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import hashlib
 import datetime
 import os
+import random
+
 
 # get these from environment
 MURMEL_POSTGRES_USER = os.getenv("MURMEL_POSTGRES_USER")
@@ -124,16 +126,20 @@ def set_murmel_chat_room(conn, murmel_id, room_id):
 
 def get_murmel_radar(conn, username):
 
+    # just get large number of murmels, hoping there are distinct users
+    # FIXME this will NOT scale to many users!
     s = (
-        select([murmel], murmel.c.username != username)
+        select([murmel])
+        .where(murmel.c.username != username)
         .order_by(murmel.c.created_at.desc())
-        .limit(5)
+        .limit(1000)
     )
 
     result = conn.execute(s).fetchall()
 
-    # not pythonic, but hey...
+    # collect distinct users's murmel
     res = []
+    usernames = {}
     for r in result:
 
         d = {
@@ -144,9 +150,18 @@ def get_murmel_radar(conn, username):
             "created_at": r["created_at"],
         }
 
-        res.append(d)
+        # append only if username was not encountered before
+        if r["username"] not in usernames.keys():
 
-    return res
+            res.append(d)
+
+            usernames[r["username"]] = r["username"]
+
+    # randomise user order
+    random.shuffle(res)
+
+    # return at most five murmels
+    return res[0 : (min(len(res), 5))]
 
 
 def hash_password(plaintext_password):
